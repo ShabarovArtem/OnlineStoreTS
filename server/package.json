@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "start": "env-cmd --silent ts-node src/main.ts",
-    "dev:watch": "tsc-watch --onSuccess \"npm start\""
+    "dev:watch": "tsc-watch --onSuccess \"npm start\"",
+    "type-check": "tsc --noEmit --project tsconfig.json"
   },
   "author": "",
   "license": "ISC",
