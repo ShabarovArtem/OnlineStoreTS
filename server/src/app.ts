@@ -1,11 +1,11 @@
 import express from "express";
 import bodyParser from "body-parser";
-// import { routes } from "./routes";
-
-// import { ErrorHandling } from './middlewares';
+import cors from "cors";
 
 export default async function createApp() {
     const app = express();
+
+    app.use(cors());
 
     app.use(bodyParser.json());
 
@@ -13,3 +13,4 @@ export default async function createApp() {
 
     return app;
 }
+
