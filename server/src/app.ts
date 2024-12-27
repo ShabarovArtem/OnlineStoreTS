@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import router from './routes/index';
 
 export default async function createApp() {
     const app = express();
@@ -9,7 +10,7 @@ export default async function createApp() {
 
     app.use(bodyParser.json());
 
-    // app.use(routes);
+    app.use('/api', router)
 
     return app;
 }
