@@ -1,14 +1,13 @@
-// services/usersService.ts
-import { CreateUserDto } from "../dto";
+import {CreateUserDto, UserDto} from "../dto";
 import { User, Basket } from "../models";
-import { ApiError } from "../errors/ApiError";
+import  ApiError  from "../errors/ApiError";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const generateJwt = (id: number, email: string, role: string): string => {
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) {
-        throw new Error("SECRET_KEY is not defined");
+        throw ApiError.BadRequest("SECRET_KEY is not defined");
     }
 
     return jwt.sign(
@@ -19,17 +18,21 @@ const generateJwt = (id: number, email: string, role: string): string => {
 };
 
 export class UsersService {
-    // Регистрация пользователя
     async registration(dto: CreateUserDto) {
-        const { email, password, role } = dto;
+        const { email, password } = dto;
+        let { role } = dto;
 
         if (!email || !password) {
-            throw ApiError.badRequest('Некорректный email или password');
+            throw ApiError.BadRequest('Некорректный email или password');
+        }
+
+        if (!role) {
+            role = 'USER';
         }
 
         const candidate = await User.findOne({ where: { email } });
         if (candidate) {
-            throw ApiError.badRequest('Пользователь с таким email уже существует');
+            throw ApiError.BadRequest('Пользователь с таким email уже существует');
         }
 
         const hashPassword = await bcrypt.hash(password, 6);
@@ -40,25 +43,41 @@ export class UsersService {
         return token;
     }
 
-    // Логин пользователя
-    async login(email: string, password: string) {
+
+    async login(dto: CreateUserDto) {
+        const { email, password } = dto;
+        let { role } = dto;
+        if (!role) {
+            role = 'USER';
+        }
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            throw ApiError.internal('Пользователь не найден');
+            throw ApiError.BadRequest('Пользователь не найден');
         }
 
-        const comparePassword = await bcrypt.compare(password, user.password);
+        const comparePassword = await bcrypt.compare(password, user.dataValues.password);
         if (!comparePassword) {
-            throw ApiError.internal('Указан неверный пароль');
+            throw ApiError.BadRequest('Указан неверный пароль');
         }
 
         const token = generateJwt(user.id, user.email, user.role);
         return token;
     }
 
-    // Проверка токена
-    async check(user: any) {
-        const token = generateJwt(user.id, user.email, user.role);
+
+    async check(userId: number): Promise<string> {
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw ApiError.BadRequest('Пользователь не найден');
+        }
+
+        const userDto: UserDto = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+        };
+
+        const token = generateJwt(userDto.id, userDto.email, userDto.role);
         return token;
     }
 }

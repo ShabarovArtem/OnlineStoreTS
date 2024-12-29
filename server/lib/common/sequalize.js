@@ -6,6 +6,6 @@ export const sequelize = new Sequelize({
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    models: [__dirname + '/models/*.model.ts'],
+    models: [__dirname + "/../models/*.model.ts"],
     logging: false,
 });

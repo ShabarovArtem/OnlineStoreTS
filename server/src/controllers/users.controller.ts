@@ -1,46 +1,33 @@
 import { Request, Response, NextFunction } from "express";
-import { ApiError } from "../errors/ApiError";
-import 'express-async-errors'; // Для автоматической обработки ошибок в async мидлварах
-import {CreateUserDto, UserDto} from "../dto"; // DTO для создания пользователя
 import { UsersService } from "../services/usersService";
+import  ApiError  from "../errors/ApiError";
+import {CreateUserDto, UserDto} from "../dto";
+
+export interface AuthRequest extends Request {
+    user?: UserDto;
+}
 
 export class UsersController {
     private usersService = new UsersService();
 
-    // Регистрация нового пользователя
     async registration(req: Request, res: Response, next: NextFunction) {
-        try {
-            const dto: CreateUserDto = req.body; // Достаем DTO из тела запроса
+            const dto: CreateUserDto = req.body;
             const token = await this.usersService.registration(dto);
             res.json({ token });
-        } catch (e) {
-            next(e);
-        }
     }
 
-    // Авторизация пользователя
     async login(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { email, password } = req.body;
-            const token = await this.usersService.login(email, password);
+            const dto: CreateUserDto = req.body;
+            const token = await this.usersService.login(dto);
             res.json({ token });
-        } catch (e) {
-            next(e);
-        }
     }
 
-    // Проверка токена пользователя
-    async check(req: Request, res: Response, next: NextFunction) {
-        try {
-            const userDto: UserDto = req.body.user; // Используем DTO, переданное в тело запроса
-            if (!userDto) {
-                throw ApiError.internal('Пользователь не найден');
-            }
-
-            const token = await this.usersService.check(userDto);
-            return res.json({ token });
-        } catch (e) {
-            next(e);
+    async check(req: AuthRequest, res: Response, next: NextFunction) {
+        if (!req.user) {
+            return res.status(401).json({ message: 'Пользователь не авторизован' });
         }
+        const token = await this.usersService.check(req.user.id);
+        res.json({ token });
     }
 }
+

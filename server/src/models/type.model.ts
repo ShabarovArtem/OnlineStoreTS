@@ -1,7 +1,7 @@
 import { Table, Column, Model, HasMany, BelongsToMany } from 'sequelize-typescript';
-import { Device } from './device.model'; // Укажите корректный путь к модели Device
-import { Brand } from './brand.model'; // Укажите корректный путь к модели Brand
-import { TypeBrand } from './typeBrand.model'; // Укажите корректный путь к модели TypeBrand
+import { Device } from './device.model';
+import { Brand } from './brand.model';
+import { TypeBrand } from './typeBrand.model';
 
 interface TypeCreationAttrs {
     name: string;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { UsersController } from '../controllers';
+import {TypesController} from '../controllers';
 import { body } from 'express-validator';
 import { ValidateBody } from '../middleware';
 
@@ -10,7 +10,7 @@ router.post("/",
     body('name').isString(),
     ValidateBody,
     async (req, res) => {
-    await typesController.create(req, res)
+    await typesController.add(req, res)
 });
 
 router.get("/", async (req, res) => {

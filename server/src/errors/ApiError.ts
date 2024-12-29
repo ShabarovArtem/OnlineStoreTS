@@ -1,24 +1,17 @@
-export class ApiError extends Error {
-    public status: number;
-    public message: string;
-
-    constructor(status: number, message: string) {
-        super(message);
-        this.status = status;
-        this.message = message;
-
-        Object.setPrototypeOf(this, ApiError.prototype);
+export default class ApiError extends Error {
+    constructor(public status: number, public msg: string) {
+        super(msg);
     }
-
-    static badRequest(message: string): ApiError {
-        return new ApiError(400, message);
+    static BadRequest(msg: string) {
+        return new ApiError(400, msg);
     }
-
-    static internal(message: string): ApiError {
-        return new ApiError(500, message);
+    static Forbidden(msg: string) {
+        return new ApiError(403, msg);
     }
-
-    static forbidden(message: string): ApiError {
-        return new ApiError(403, message);
+    static NotFound(msg: string) {
+        return new ApiError(404, msg);
+    }
+    static Conflict(msg: string) {
+        return new ApiError(409, msg);
     }
 }
