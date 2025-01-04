@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 const generateJwt = (id: number, email: string, role: string): string => {
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) {
-        throw ApiError.BadRequest("SECRET_KEY is not defined");
+        throw ApiError.BadRequest("SECRET_KEY не определён");
     }
 
     return jwt.sign(
@@ -52,7 +52,7 @@ export class UsersService {
         }
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            throw ApiError.BadRequest('Пользователь не найден');
+            throw ApiError.NotFound('Пользователь не найден');
         }
 
         const comparePassword = await bcrypt.compare(password, user.dataValues.password);
@@ -65,19 +65,13 @@ export class UsersService {
     }
 
 
-    async check(userId: number): Promise<string> {
+    async check(userId: number) {
         const user = await User.findByPk(userId);
         if (!user) {
-            throw ApiError.BadRequest('Пользователь не найден');
+            throw ApiError.NotFound('Пользователь не найден');
         }
 
-        const userDto: UserDto = {
-            id: user.id,
-            email: user.email,
-            role: user.role,
-        };
-
-        const token = generateJwt(userDto.id, userDto.email, userDto.role);
+        const token = generateJwt(user.id, user.email, user.role);
         return token;
     }
 }

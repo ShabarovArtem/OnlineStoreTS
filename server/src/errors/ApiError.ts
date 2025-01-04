@@ -5,6 +5,9 @@ export default class ApiError extends Error {
     static BadRequest(msg: string) {
         return new ApiError(400, msg);
     }
+    static Unauthorized(msg: string) {
+        return new ApiError(401, msg);
+    }
     static Forbidden(msg: string) {
         return new ApiError(403, msg);
     }

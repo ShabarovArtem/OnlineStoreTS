@@ -26,7 +26,7 @@ router.post("/login",
     }
 );
 
-router.get("/check",
+router.get("/auth",
     authMiddleware,
     async (req, res, next) => {
         await usersController.check(req, res, next);
