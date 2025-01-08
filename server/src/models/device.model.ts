@@ -1,9 +1,9 @@
 import { Table, Column, Model, ForeignKey, BelongsTo, HasMany, DataType } from 'sequelize-typescript';
-import { Type } from './type.model'; // Укажите корректный путь к модели Type
-import { Brand } from './brand.model'; // Укажите корректный путь к модели Brand
-import { Rating } from './rating.model'; // Укажите корректный путь к модели Rating
-import { BasketDevice } from './basketDevice.model'; // Укажите корректный путь к модели BasketDevice
-import { DeviceInfo } from './deviceInfo.model'; // Укажите корректный путь к модели DeviceInfo
+import { Type } from './type.model';
+import { Brand } from './brand.model';
+import { Rating } from './rating.model';
+import { BasketDevice } from './basketDevice.model';
+import { DeviceInfo } from './deviceInfo.model';
 
 interface DeviceCreationAttrs {
     name: string;
@@ -40,15 +40,6 @@ export class Device extends Model<Device, DeviceCreationAttrs> {
 
     @BelongsTo(() => Brand)
     brand!: Brand;
-
-    @HasMany(() => Rating)
-    ratings!: Rating[];
-
-    @HasMany(() => BasketDevice)
-    basketDevices!: BasketDevice[];
-
-    @HasMany(() => DeviceInfo, { as: 'info' })
-    deviceInfos!: DeviceInfo[];
 }
 
 export default Device;
