@@ -2,25 +2,19 @@ import { Device } from '../models/device.model';
 import {CreateDeviceDto, GetDevicesQuery} from '../dto';
 import ApiError from '../errors/ApiError';
 import path from 'path';
-import { promises as fsPromises } from 'fs';
 import { UploadedFile } from 'express-fileupload';
-import fs from 'fs/promises';
-
+import { v4 as uuidv4 } from 'uuid';
 
 export class DeviceService {
     async create(dto: CreateDeviceDto, img: UploadedFile) {
-        const {name, price, typeId, brandId} = dto;
+        const { name, price, typeId, brandId } = dto;
 
-        const existingDevice = await Device.findOne({where: {name}});
+        const existingDevice = await Device.findOne({ where: { name } });
         if (existingDevice) {
             throw ApiError.Conflict(`Device with the name "${name}" already exists`);
         }
 
-        if (!img || Array.isArray(img)) {
-            throw ApiError.BadRequest('Invalid file');
-        }
-
-        const fileName = `device_${Date.now()}.jpg`;
+        const fileName = `${uuidv4()}.jpg`;
 
         await img.mv(path.resolve(__dirname, '..', 'static', fileName));
 
@@ -29,7 +23,7 @@ export class DeviceService {
             price,
             typeId,
             brandId,
-            img: fileName
+            img: fileName,
         });
 
         return device;
@@ -75,19 +69,15 @@ export class DeviceService {
     async delete(deviceId: number): Promise<{ message: string }> {
         try {
             const device = await Device.findOne({ where: { id: deviceId } });
-            if (!device || !device.img) {
-                throw ApiError.NotFound('Устройство или изображение не найдено');
+            if (!device) {
+                throw ApiError.NotFound('Устройство не найдено');
             }
-
-            const filePath = path.resolve(__dirname, '..', 'static', device.img);
-
-            await fsPromises.unlink(filePath);
 
             await device.destroy();
 
-            return { message: 'Устройство и изображение удалены' };
+            return { message: 'Устройство успешно удалено' };
         } catch (error: unknown) {
-            throw ApiError.BadRequest('Не удалось удалить устройство или изображение');
+            throw ApiError.BadRequest('Не удалось удалить устройство');
         }
     }
 }
