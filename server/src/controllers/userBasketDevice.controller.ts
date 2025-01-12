@@ -1,7 +1,7 @@
-import {NextFunction, Request, Response} from "express";
+import { Request, Response } from "express";
 import 'express-async-errors';
 import ApiError from "../errors/ApiError";
-import {BasketService} from "../services/basket.service";
+import { BasketService } from "../services/basket.service";
 import jwt from "jsonwebtoken";
 
 export class BasketController {
@@ -27,7 +27,7 @@ export class BasketController {
         }
     }
 
-    async addDeviceToBasket(req: Request, res: Response, next: NextFunction) {
+    async addDeviceToBasket(req: Request, res: Response) {
         const userId = this.extractUserIdFromToken(req);
         const { deviceId } = req.body;
 
@@ -39,7 +39,7 @@ export class BasketController {
         res.json(result);
     }
 
-    async getAll(req: Request, res: Response, next: NextFunction) {
+    async getAll(req: Request, res: Response) {
         const userId = this.extractUserIdFromToken(req);
 
         const result = await this.basketService.getAll(userId);
