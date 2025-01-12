@@ -1,6 +1,6 @@
 import { Table, Column, Model, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { User } from './user.model'; // Укажите корректный путь к модели User
-import { Device } from './device.model'; // Укажите корректный путь к модели Device
+import { User } from './user.model';
+import { Device } from './device.model';
 
 interface RatingCreationAttrs {
     rate: number;

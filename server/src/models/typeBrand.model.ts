@@ -1,6 +1,6 @@
 import { Table, Column, Model, ForeignKey } from 'sequelize-typescript';
-import { Type } from './type.model'; // Укажите корректный путь к модели Type
-import { Brand } from './brand.model'; // Укажите корректный путь к модели Brand
+import { Type } from './type.model';
+import { Brand } from './brand.model';
 
 interface TypeBrandCreationAttrs {
     typeId: number;

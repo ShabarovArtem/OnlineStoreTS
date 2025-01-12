@@ -9,7 +9,6 @@ export class DeviceController {
 
     async create(req: Request, res: Response) {
         try {
-            // Проверяем наличие всех обязательных данных в теле запроса
             const { name, price, typeId, brandId } = req.body;
             const img = req.files?.img;
 
@@ -19,7 +18,6 @@ export class DeviceController {
 
             const file = Array.isArray(img) ? img[0] : img;
 
-            // Создаём DTO и передаём в сервис
             const dto: CreateDeviceDto = {
                 name,
                 price: parseFloat(price),

@@ -1,6 +1,6 @@
 import { Table, Column, Model, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
-import { User } from './user.model'; // Укажите корректный путь к модели User
-import { BasketDevice } from './basketDevice.model'; // Укажите корректный путь к модели BasketDevice
+import { User } from './user.model';
+import { BasketDevice } from './basketDevice.model';
 
 interface BasketCreationAttrs {
     userId: number;

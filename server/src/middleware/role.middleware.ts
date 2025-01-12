@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import {UserDto} from "../dto";
+import { UserDto } from '../dto';
 import ApiError from '../errors/ApiError';
 
 interface AuthenticatedRequest extends Request {
     user?: UserDto;
 }
 
-export function AuthMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export function RoleMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     if (req.method === 'OPTIONS') {
         return next();
     }
@@ -25,11 +25,13 @@ export function AuthMiddleware(req: AuthenticatedRequest, res: Response, next: N
 
         const decoded = jwt.verify(token, process.env.SECRET_KEY as string) as UserDto;
 
+        if (decoded.role.trim().toUpperCase() !== 'ADMIN') {
+            throw ApiError.Forbidden('Нет доступа. Требуется роль ADMIN');
+        }
+
         req.user = decoded;
         next();
     } catch (error) {
-        console.error('Ошибка при проверке токена:', error);
         next(ApiError.Unauthorized('Не авторизован'));
     }
 }
-

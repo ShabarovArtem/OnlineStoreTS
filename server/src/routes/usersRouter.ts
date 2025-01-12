@@ -1,7 +1,7 @@
 import express from 'express';
 import { UsersController } from '../controllers';
 import { body } from 'express-validator';
-import {authMiddleware, ValidateBody} from '../middleware';
+import {AuthMiddleware, ValidateBody} from '../middleware';
 // import authMiddleware from "../middleware/auth.middleware";
 
 
@@ -27,7 +27,7 @@ router.post("/login",
 );
 
 router.get("/auth",
-    authMiddleware,
+    AuthMiddleware,
     async (req, res, next) => {
         await usersController.check(req, res, next);
     });

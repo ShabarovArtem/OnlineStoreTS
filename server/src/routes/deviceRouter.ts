@@ -1,19 +1,19 @@
 import {DeviceController} from '../controllers';
 import {body, param, query} from 'express-validator';
-import {authMiddleware, ValidateBody} from '../middleware';
+import { RoleMiddleware, ValidateBody} from '../middleware';
 import express from "express";
 
 export const router = express.Router();
 const deviceController = new DeviceController();
 
-// Маршрут для создания устройства
 router.post(
     '/',
+    RoleMiddleware,
     body('name').isString(),
     body('price').isNumeric(),
     body('typeId').isNumeric(),
     body('brandId').isNumeric(),
-    ValidateBody,  // Этот middleware проверяет валидность тела запроса
+    ValidateBody,
     async (req, res) => {
         await deviceController.create(req, res);
     }
@@ -44,6 +44,7 @@ router.delete(
     "/",
     body('deviceId').isInt(),
     ValidateBody,
+    RoleMiddleware,
     async (req, res) => {
         await deviceController.delete(req, res);
     }

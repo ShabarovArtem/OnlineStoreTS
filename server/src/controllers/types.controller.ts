@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import 'express-async-errors';
 import { CreateTypeDto } from "../dto";
 import { TypesService } from "../services/types.service";
-import { validationResult } from "express-validator";
 
 export class TypesController {
 

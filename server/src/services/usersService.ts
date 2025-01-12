@@ -1,4 +1,4 @@
-import {CreateUserDto, UserDto} from "../dto";
+import {CreateUserDto} from "../dto";
 import { User, Basket } from "../models";
 import  ApiError  from "../errors/ApiError";
 import bcrypt from 'bcrypt';
@@ -9,7 +9,6 @@ const generateJwt = (id: number, email: string, role: string): string => {
     if (!secretKey) {
         throw ApiError.BadRequest("SECRET_KEY не определён");
     }
-
     return jwt.sign(
         { id, email, role },
         secretKey,
@@ -21,7 +20,6 @@ export class UsersService {
     async registration(dto: CreateUserDto) {
         const { email, password } = dto;
         let { role } = dto;
-
         if (!email || !password) {
             throw ApiError.BadRequest('Некорректный email или password');
         }
@@ -37,9 +35,9 @@ export class UsersService {
 
         const hashPassword = await bcrypt.hash(password, 6);
         const user = await User.create({ email, role, password: hashPassword });
-        await Basket.create({ userId: user.id });
+        await Basket.create({ userId: user.get('id') });
 
-        const token = generateJwt(user.id, user.email, user.role);
+        const token = generateJwt(user.get('id'), user.get('email'), user.get('role'));
         return token;
     }
 
@@ -55,15 +53,14 @@ export class UsersService {
             throw ApiError.NotFound('Пользователь не найден');
         }
 
-        const comparePassword = await bcrypt.compare(password, user.dataValues.password);
+        const comparePassword = await bcrypt.compare(password, user.get('password'));
         if (!comparePassword) {
             throw ApiError.BadRequest('Указан неверный пароль');
         }
 
-        const token = generateJwt(user.id, user.email, user.role);
+        const token = generateJwt(user.get('id'), user.get('email'), user.get('role'));
         return token;
     }
-
 
     async check(userId: number) {
         const user = await User.findByPk(userId);
@@ -71,7 +68,7 @@ export class UsersService {
             throw ApiError.NotFound('Пользователь не найден');
         }
 
-        const token = generateJwt(user.id, user.email, user.role);
+        const token = generateJwt(user.get('id'), user.get('email'), user.get('role'));
         return token;
     }
 }
