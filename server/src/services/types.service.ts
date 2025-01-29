@@ -12,7 +12,6 @@ export class TypesService {
     async add(dto: CreateTypeDto) {
         const name = dto.name;
 
-        // Прямой запрос, чтобы избежать использования getByTypename
         const candidate = await Type.findOne({ where: { name } });
         if (candidate) throw ApiError.Conflict("Types with this name already exists");
 
